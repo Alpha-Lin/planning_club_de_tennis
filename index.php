@@ -9,11 +9,11 @@
 <body>
     <form action="index.php" method="POST">
         <label for="nom">Nom : </label>
-        <input name="nom" id="nom" type="text">
+        <input name="nom" id="nom" type="text" required>
         <label for="prénom">Prénom : </label>
-        <input name="prénom" id="prénom" type="text">
+        <input name="prénom" id="prénom" type="text" required>
         <label for="motDePasse">Mot de passe : </label> <!-- faire une slice -->
-        <input name="motDePasse" id="motDePasse" type="password">
+        <input name="motDePasse" id="motDePasse" type="password" required>
 
         <input type="submit" value="Envoyer">
     </form>
