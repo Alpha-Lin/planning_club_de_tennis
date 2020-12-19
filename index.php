@@ -1,4 +1,3 @@
-<?php require('inc/connection.php');?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -17,5 +16,7 @@
 
         <input type="submit" value="Envoyer">
     </form>
+
+    <?php require('inc/connection.php');?>
 </body>
 </html>
