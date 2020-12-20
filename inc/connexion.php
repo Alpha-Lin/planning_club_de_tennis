@@ -10,21 +10,28 @@ if(isset($_POST['nom']) AND isset($_POST['prénom']) AND isset($_POST['motDePass
 	if (!empty($_POST['nom']) AND !empty($_POST['prénom']) AND !empty($_POST['motDePasse']))
 	{
 		if(isset($_POST['typeRequête'])){
-			$req = $bdd->prepare('INSERT INTO users(nom, prénom, motDePasse) VALUE (?, ?, ?)');
+			$req = $bdd->prepare('INSERT INTO users(nom, prénom, motDePasse, typeCompte) VALUE (?, ?, ?, ?)');
 			$req->execute(array($_POST['nom'],
 								$_POST['prénom'],
-								password_hash($_POST['motDePasse'], PASSWORD_ARGON2ID))
+								password_hash($_POST['motDePasse'], PASSWORD_ARGON2ID),
+								isset($_POST['admin']) ? 1 : 0)
 			); //Pour insérer un nouvel utilisateur
 			echo '<p>User inséré</p>';
 		}else{
-			$reponse = $bdd->prepare("SELECT motDePasse FROM users WHERE nom = ? AND prénom = ?"); // va chercher le hash de l'utilisateur
+			$reponse = $bdd->prepare("SELECT motDePasse, typeCompte FROM users WHERE nom = ? AND prénom = ?"); // va chercher le hash de l'utilisateur
 			if ($reponse->execute(array($_POST['nom'], $_POST['prénom']))) // vérifie que la requête a réussi
 			{
-				if ($mdp = $reponse->fetch()){ // vérifie que l'utilisateur existe
-					if (password_verify($_POST['motDePasse'], $mdp[0]))
+				$data = $reponse->fetch();
+
+				if ($data[0]){ // vérifie que l'utilisateur existe
+					if (password_verify($_POST['motDePasse'], $data[0]))
 					{
 						echo '<p>Présent</p>';
 						// TODO :  afficher le planning
+						if ($data[1]){
+							echo '<p>Admin</p>';
+						}
+						
 					}else{
 						echo '<p>MDP incorrect</p>';
 					}
