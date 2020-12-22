@@ -18,20 +18,15 @@ if(isset($_POST['nom']) AND isset($_POST['prénom']) AND isset($_POST['motDePass
 			); //Pour insérer un nouvel utilisateur
 			echo '<p>User inséré</p>';
 		}else{
-			$reponse = $bdd->prepare("SELECT motDePasse, typeCompte FROM users WHERE nom = ? AND prénom = ?"); // va chercher le hash de l'utilisateur
+			$reponse = $bdd->prepare("SELECT motDePasse, typeCompte, id FROM users WHERE nom = ? AND prénom = ?"); // va chercher le hash de l'utilisateur
 			if ($reponse->execute(array($_POST['nom'], $_POST['prénom']))) // vérifie que la requête a réussi
 			{
-				$data = $reponse->fetch();
+				$infoUser = $reponse->fetch();
 
-				if ($data[0]){ // vérifie que l'utilisateur existe
-					if (password_verify($_POST['motDePasse'], $data[0]))
+				if ($infoUser[0]){ // vérifie que l'utilisateur existe
+					if (password_verify($_POST['motDePasse'], $infoUser[0]))
 					{
-						echo '<p>Présent</p>';
-						// TODO :  afficher le planning
-						if ($data[1]){
-							echo '<p>Admin</p>';
-						}
-						
+						require 'inc/interface.php';
 					}else{
 						echo '<p>MDP incorrect</p>';
 					}
