@@ -20,6 +20,9 @@
         <label for="typeRequête">Insérer dans la bdd : </label>
         <input name="typeRequête" id="typeRequête" type="checkbox">
 
+        <label for="entraîneur">Entraîneur : </label>
+        <input name="entraîneur" id="entraîneur" type="checkbox">
+
         <label for="admin">Admin : </label>
         <input name="admin" id="admin" type="checkbox">
 

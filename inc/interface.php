@@ -15,7 +15,7 @@ if ($reponse->execute(array($infoUser[2]))){
     }
     echo '</tbody></table>';
 }
-if ($infoUser[1]){
-    echo '<p>Admin</p>';
+if ($infoUser[1]){ // Admin : peut créer et supprimer des horaires
+    require 'inc/admin.php';
 }
 ?>

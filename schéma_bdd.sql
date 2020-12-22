@@ -1,8 +1,9 @@
 CREATE TABLE users ( -- représente les infos d'un utilisateur
     id INT PRIMARY KEY NOT NULL AUTO_INCREMENT,
-    nom VARCHAR(20) NOT NULL,
+    nom VARCHAR(20),
     prénom VARCHAR(20) NOT NULL,
     motDePasse CHAR(97) NOT NULL,
+    entraîneur BOOLEAN NOT NULL,
     typeCompte BOOLEAN NOT NULL
 );
 

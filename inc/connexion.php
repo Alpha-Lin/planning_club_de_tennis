@@ -10,15 +10,16 @@ if(isset($_POST['nom']) AND isset($_POST['prénom']) AND isset($_POST['motDePass
 	if (!empty($_POST['nom']) AND !empty($_POST['prénom']) AND !empty($_POST['motDePasse']))
 	{
 		if(isset($_POST['typeRequête'])){
-			$req = $bdd->prepare('INSERT INTO users(nom, prénom, motDePasse, typeCompte) VALUE (?, ?, ?, ?)');
+			$req = $bdd->prepare('INSERT INTO users(nom, prénom, motDePasse, entraîneur, typeCompte) VALUE (?, ?, ?, ?, ?)');
 			$req->execute(array($_POST['nom'],
 								$_POST['prénom'],
 								password_hash($_POST['motDePasse'], PASSWORD_ARGON2ID),
+								isset($_POST['entraîneur']) ? 1 : 0,
 								isset($_POST['admin']) ? 1 : 0)
 			); //Pour insérer un nouvel utilisateur
 			echo '<p>User inséré</p>';
 		}else{
-			$reponse = $bdd->prepare("SELECT motDePasse, typeCompte, id FROM users WHERE nom = ? AND prénom = ?"); // va chercher le hash de l'utilisateur
+			$reponse = $bdd->prepare("SELECT motDePasse, typeCompte, entraîneur, id FROM users WHERE nom = ? AND prénom = ?"); // va chercher le hash de l'utilisateur
 			if ($reponse->execute(array($_POST['nom'], $_POST['prénom']))) // vérifie que la requête a réussi
 			{
 				$infoUser = $reponse->fetch();
