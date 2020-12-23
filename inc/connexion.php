@@ -23,12 +23,15 @@ if (isset($_POST['motDePasse']) AND isset($_POST['login'])){
 
 					echo '<a href="inc/logout.php">Déconnexion</p>';
 				}else{
+					require 'inc/connexion.html';
 					echo '<p>MDP incorrect</p>';
 				}
 			}else{
+				require 'inc/connexion.html';
 				echo '<p>Nom ou Prénom incorrect</p>';
 			}
 		}else{
+			require 'inc/connexion.html';
 			echo '<p>Erreur dans la requête à la BDD</p>';
 		}
 	}

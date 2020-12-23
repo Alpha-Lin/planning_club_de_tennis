@@ -1,3 +1,11 @@
+<?php // prépare à l'avance toutes les infos des utilisateurs
+
+$reponse = $bdd->query('SELECT * FROM users');
+
+$users = $reponse->fetchAll();
+
+?>
+
 <p>Admin</p>
 
 <p>Ajouter un utilisateur : </p>
@@ -24,21 +32,22 @@
     <input type="submit" value="Envoyer">
 </form>
 
-<?php if (isset($_POST['prénom']) AND isset($_POST['nom']) AND isset($_POST['mdpInscription']) AND isset($_POST['birthday'])){ // Pour insérer un nouvel utilisateur
-		if (!empty($_POST['prénom']) AND !empty($_POST['mdpInscription'])){
-			$req = $bdd->prepare('INSERT INTO users(nom, prénom, motDePasse, entraîneur, typeCompte, année_naissance) VALUE (?, ?, ?, ?, ?, ?)');
-			$req->execute(array(!empty($_POST['nom']) ? $_POST['nom'] : Null,
-								$_POST['prénom'],
-								password_hash($_POST['mdpInscription'], PASSWORD_ARGON2ID),
-								isset($_POST['entraîneur']) ? 1 : 0,
-                                isset($_POST['admin']) ? 1 : 0,
-                                !empty($_POST['birthday']) ? $_POST['birthday'] : Null)
-			);
-			echo '<p>User inséré</p>';
-		}else{
-            echo '<p>Erreur lors de l\'insertion des données de l\'utilisateur</p>';
-        }
+<?php require 'inc/passwordChangerAdmin.php';
+if (isset($_POST['prénom']) AND isset($_POST['nom']) AND isset($_POST['mdpInscription']) AND isset($_POST['birthday'])){ // Pour insérer un nouvel utilisateur
+    if (!empty($_POST['prénom']) AND !empty($_POST['mdpInscription'])){
+        $req = $bdd->prepare('INSERT INTO users(nom, prénom, motDePasse, entraîneur, typeCompte, année_naissance) VALUE (?, ?, ?, ?, ?, ?)');
+        $req->execute(array(!empty($_POST['nom']) ? $_POST['nom'] : Null,
+                            $_POST['prénom'],
+                            password_hash($_POST['mdpInscription'], PASSWORD_ARGON2ID),
+                            isset($_POST['entraîneur']) ? 1 : 0,
+                            isset($_POST['admin']) ? 1 : 0,
+                            !empty($_POST['birthday']) ? $_POST['birthday'] : Null)
+        );
+        echo '<p>User inséré</p>';
+    }else{
+        echo '<p>Erreur lors de l\'insertion des données de l\'utilisateur</p>';
     }
+}
 ?>
 
 <p>Créer un entraînement : </p>
