@@ -1,11 +1,11 @@
 <?php echo '<p>Présent</p>';
 // TODO :  afficher le planning en tableau
 $reponse = $bdd->prepare("SELECT * FROM planning JOIN users_in_planning ON id_planning = id WHERE id_user = ?");
-if ($reponse->execute(array($infoUser[2]))){
+if ($reponse->execute(array($login[1]))){
     echo '<table>
             <thead>
                 <tr>
-                    <th>Planning pour ' . htmlspecialchars($_POST['nom']) . ' ' . htmlspecialchars($_POST['prénom']) . '</th>
+                    <th>Planning pour ' . htmlspecialchars($infoUser[3]) . ' ' . htmlspecialchars($login[0]) . '</th>
                 </tr>
             </thead>
             <tbody>';
