@@ -1,4 +1,4 @@
-<h2>Changer de mot de passe d'un utilisateur</h2>
+<h2>Changer le mot de passe d'un utilisateur</h2>
     
 <form action="index.php" method="POST">
 

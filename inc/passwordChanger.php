@@ -2,16 +2,16 @@
     
 <form action="index.php" method="POST">
 
-    <label for="newPassword">Nouveau mot de passe : </label>
-    <input name="newPassword" id="newPassword" type="password" required>
+    <label for="newPasswordUser">Nouveau mot de passe : </label>
+    <input name="newPasswordUser" id="newPasswordUser" type="password" required>
 
     <input type="submit" value="Envoyer">
 </form>
 
 <?php
-if (isset($_POST['newPassword']) AND !empty($_POST['newPassword'])){
+if (isset($_POST['newPasswordUser']) AND !empty($_POST['newPasswordUser'])){
     $req = $bdd->prepare('UPDATE users SET motDePasse = ? WHERE id = ' . $_SESSION['id']);
-    if ($req->execute(array(password_hash($_POST['newPassword'], PASSWORD_ARGON2ID)))){
+    if ($req->execute(array(password_hash($_POST['newPasswordUser'], PASSWORD_ARGON2ID)))){
         echo '<p>Mot de passe changé</p>';
     }
 }

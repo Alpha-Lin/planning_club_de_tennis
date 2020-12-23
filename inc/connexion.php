@@ -42,7 +42,7 @@ if (isset($_POST['motDePasse']) AND isset($_POST['login'])){
 	{
 		$infoUser = $reponse->fetch();
 		require 'inc/interface.php';
-		echo '<a href="inc/logout.php">Déconnexion</p>';
+		echo '<a href="inc/logout.php">Déconnexion</a>';
 	}
 }else{
 	require 'inc/connexion.html';
