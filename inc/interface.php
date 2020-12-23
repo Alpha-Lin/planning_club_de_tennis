@@ -1,11 +1,11 @@
 <?php echo '<p>Présent</p>';
 // TODO :  afficher le planning en tableau
 $reponse = $bdd->prepare("SELECT * FROM planning JOIN users_in_planning ON id_planning = id WHERE id_user = ?");
-if ($reponse->execute(array($login[1]))){
+if ($reponse->execute(array($_SESSION['id']))){
     echo '<table>
             <thead>
                 <tr>
-                    <th>Planning pour ' . htmlspecialchars($infoUser[3]) . ' ' . htmlspecialchars($login[0]) . '</th>
+                    <th>Planning pour ' . htmlspecialchars($infoUser[2]) . ' ' . htmlspecialchars($_SESSION['prénom']) . '</th>
                 </tr>
             </thead>
             <tbody>';
@@ -15,7 +15,7 @@ if ($reponse->execute(array($login[1]))){
     }
     echo '</tbody></table>';
 }
-if ($infoUser[1]){ // Admin : peut créer et supprimer des horaires
+if ($infoUser[0]){ // Admin : peut créer et supprimer des horaires
     require 'inc/admin.php';
 }
 ?>
