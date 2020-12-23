@@ -3,6 +3,7 @@ CREATE TABLE users ( -- représente les infos d'un utilisateur
     nom VARCHAR(20),
     prénom VARCHAR(20) NOT NULL,
     motDePasse CHAR(97) NOT NULL,
+    année_naissance YEAR,
     entraîneur BOOLEAN NOT NULL,
     typeCompte BOOLEAN NOT NULL
 );
