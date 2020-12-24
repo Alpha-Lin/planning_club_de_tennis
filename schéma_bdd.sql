@@ -22,6 +22,6 @@ CREATE TABLE planning ( -- chaque instance représentera un entraînement unique
 CREATE TABLE users_in_planning ( -- lie un utilisateur à un planning via leurs id
     id_user INT NOT NULL,
     id_planning  INT NOT NULL,
-    FOREIGN KEY(id_user) REFERENCES users (id),
-    FOREIGN KEY(id_planning) REFERENCES planning (id)
+    FOREIGN KEY(id_user) REFERENCES users (id) ON DELETE CASCADE,
+    FOREIGN KEY(id_planning) REFERENCES planning (id) ON DELETE CASCADE
 );

@@ -1,6 +1,6 @@
 <?php // prépare à l'avance toutes les infos des utilisateurs
 
-$reponse = $bdd->query('SELECT * FROM users');
+$reponse = $bdd->query('SELECT id, prénom, nom FROM users');
 
 $users = $reponse->fetchAll();
 
@@ -68,22 +68,42 @@ if (isset($_POST['prénom'], $_POST['nom'], $_POST['mdpInscription'], $_POST['bi
         ?>
     </select>
 
+    <script src="ajout_user.js"></script>
+
+    <div id="user_adding"></div>
+
+    <button type="button" onclick="add_user(<?=htmlspecialchars(json_encode($users))?>)">Ajouter un utilisateur</button>
+    <button type="button" onclick="del_user()">Supprimer un utilisateur</button>
+
     <input type="submit" value="Créer">
 </form>
 
 <?php if(isset($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur'])){ // Vérifie l'intégrité des données et insère le cours dans la BDD
     if(!empty($_GET['date']) AND !empty($_GET['h_début']) AND !empty($_GET['h_fin']) AND !empty($_GET['entraîneur'])){
-        $req = $bdd->prepare('SELECT id FROM planning WHERE jour = ? AND heure_début = ? AND heure_fin = ? AND entraîneur_id = ?');
-        if($req->execute(array($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur']))){
-            echo '<p>Un cours est déjà programmé à cette date pour cet entraîneur.</p>';
-        }else{
-            $req = $bdd->prepare('INSERT INTO planning (jour, heure_début, heure_fin, entraîneur_id) VALUES (?, ?, ?, ?)');
-            if($req->execute(array($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur']))){
-                echo '<p>Cours inséré.</p>';
+        if(isset( $_GET['user_1']) AND !empty( $_GET['user_1'])){
+            $req = $bdd->prepare('SELECT id FROM planning WHERE jour = ? AND heure_début = ? AND heure_fin = ? AND entraîneur_id = ?');
+            $req->execute(array($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur']));
+            if($req->fetch()){ // Vérifie si un cours est déjà programmé pour le jour, l'heure, et le prof sélectionnés
+                echo '<p>Un cours est déjà programmé à cette date pour cet entraîneur.</p>';
             }else{
-                echo '<p>Erreur lors de l\'insertion du cours.</p>';
+                $req = $bdd->prepare('INSERT INTO planning (jour, heure_début, heure_fin, entraîneur_id) VALUES (?, ?, ?, ?)');
+                if($req->execute(array($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur']))){
+                    $idUser = 1;
+                    $idPlanning = $bdd->lastInsertId();
+                    while(isset($_GET['user_' . $idUser]) AND !empty($_GET['user_' . $idUser])){
+                        $req = $bdd->prepare('INSERT INTO users_in_planning (id_user, id_planning) VALUES (?, ' . $idPlanning . ')');
+                        $req->execute(array($_GET['user_' . $idUser]));
+                        $idUser++;
+                    }
+                    echo '<p>Cours inséré.</p>';
+                }else{
+                    echo '<p>Erreur lors de l\'insertion du cours.</p>';
+                }
             }
+        }else{
+            echo '<p>Erreur : Utilisateurs présents en cours non spécifiés.</p>';
         }
+        
     }
 }
 
@@ -92,35 +112,55 @@ if(isset($_GET['id_del']) AND !empty($_GET['id_del'])){ // Vérifie si l'on veut
     if($req->execute(array($_GET['id_del']))){
         echo '<p>Cours supprimé.</p>';
     }else{
-        echo '<p> Erreur : le cours n\'a pas pu être supprimé</p>';
+        echo '<p> Erreur : le cours n\'a pas pu être supprimé.</p>';
     }
 }
 
 $reponse = $bdd->query('SELECT * FROM planning'); // Récupère tous les cours enregistrés
+
+
+$maxUsers = 0;
+$table = "";
+
+while($planning = $reponse->fetch()){
+    $nb = $bdd->query('SELECT COUNT(id) FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ' . $planning['id']);
+    $nbUsers = $nb->fetch()[0];
+    if ($nbUsers > $maxUsers){
+        $maxUsers = $nbUsers;
+    }
+
+    $prénom_entraîneur = $bdd->query('SELECT prénom FROM users WHERE id = ' . $planning['entraîneur_id']);
+
+    $table .= '<tr><td><a href="?id_del=' . $planning['id'] . '">X</a></td>
+            <td>' . $planning['jour'] . '</td>
+            <td>' . $planning['heure_début'] . '</td>
+            <td>' . $planning['heure_fin'] . '</td>
+            <td>' . $prénom_entraîneur->fetch()[0] . '</td>';
+    $utilisateurPlanning = $bdd->query('SELECT nom, prénom FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ' . $planning['id']);
+
+    while($nomUser = $utilisateurPlanning->fetch()){
+        $table .= '<td>' . $nomUser['prénom'] . '</td>';
+    }
+
+    $table .= '</tr>';  
+}
+
 echo '<table>
         <thead>
             <tr>
-                <th colspan="5">Plannings</th>
+                <th colspan="' . 5 + $maxUsers . '">Plannings</th>
             </tr>
         </thead>
         <tbody>
             <tr>
+                <td>Supprimer</td>
                 <td>Jour</td>
                 <td>Heure de début</td>
                 <td>Heure de fin</td>
                 <td>Entraîneur</td>
-                <td>Supprimer</td>
-            </tr>';
-
-while($planning = $reponse->fetch()){
-    $prénom_entraîneur = $bdd->query('SELECT prénom FROM users WHERE id = ' . $planning['entraîneur_id']);
-    echo '<tr><td>' . $planning['jour'] . '</td>
-            <td>' . $planning['heure_début'] . '</td>
-            <td>' . $planning['heure_fin'] . '</td>
-            <td>' . $prénom_entraîneur->fetch()[0] . '</td>
-            <td><a href="?id_del=' . $planning['id'] . '">X</a></td></tr>';  
-}
-        
-echo '</tbody></table>';
+                <td colspan="' . $maxUsers . '">Utilisateurs</td>
+            </tr>'
+        . $table .
+        '</tbody></table>';
 
 ?>
