@@ -145,10 +145,14 @@ while($planning = $reponse->fetch()){
     $table .= '</tr>';  
 }
 
+if($maxUsers){
+    $maxUsers -= 1;
+}
+
 echo '<table>
         <thead>
             <tr>
-                <th colspan="' . 5 + $maxUsers . '">Plannings</th>
+                <th colspan="' . 6 + $maxUsers . '">Plannings</th>
             </tr>
         </thead>
         <tbody>
@@ -158,7 +162,7 @@ echo '<table>
                 <td>Heure de début</td>
                 <td>Heure de fin</td>
                 <td>Entraîneur</td>
-                <td colspan="' . $maxUsers . '">Utilisateurs</td>
+                <td colspan="' . 1 + $maxUsers . '">Utilisateurs</td>
             </tr>'
         . $table .
         '</tbody></table>';
