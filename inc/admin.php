@@ -90,9 +90,13 @@ if (isset($_POST['prénom'], $_POST['nom'], $_POST['mdpInscription'], $_POST['bi
                 if($req->execute(array($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur']))){
                     $idUser = 1;
                     $idPlanning = $bdd->lastInsertId();
+                    $usersInserted = array();
                     while(isset($_GET['user_' . $idUser]) AND !empty($_GET['user_' . $idUser])){
-                        $req = $bdd->prepare('INSERT INTO users_in_planning (id_user, id_planning) VALUES (?, ' . $idPlanning . ')');
-                        $req->execute(array($_GET['user_' . $idUser]));
+                        if(!in_array($_GET['user_' . $idUser], $usersInserted)){ // On vérifie que l'élève n'a pas été sélectionné 2 fois
+                            $req = $bdd->prepare('INSERT INTO users_in_planning (id_user, id_planning) VALUES (?, ' . $idPlanning . ')');
+                            $req->execute(array($_GET['user_' . $idUser]));
+                            $usersInserted[] = $_GET['user_' . $idUser];
+                        }
                         $idUser++;
                     }
                     echo '<p>Cours inséré.</p>';
@@ -122,6 +126,8 @@ $reponse = $bdd->query('SELECT * FROM planning'); // Récupère tous les cours e
 $maxUsers = 0;
 $table = "";
 
+######## Affiche toutes les heures de cours programmées ########
+
 while($planning = $reponse->fetch()){
     $nb = $bdd->query('SELECT COUNT(id) FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ' . $planning['id']);
     $nbUsers = $nb->fetch()[0];
@@ -139,7 +145,7 @@ while($planning = $reponse->fetch()){
     $utilisateurPlanning = $bdd->query('SELECT nom, prénom FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ' . $planning['id']);
 
     while($nomUser = $utilisateurPlanning->fetch()){
-        $table .= '<td>' . $nomUser['prénom'] . '</td>';
+        $table .= '<td>' . $nomUser['nom'] . ' ' . $nomUser['prénom'] . '</td>';
     }
 
     $table .= '</tr>';  
