@@ -14,14 +14,16 @@ if ($reponse->execute(array($_SESSION['id']))){
         for($i = 0; $i < 4; $i++){
             echo '<td></td>';
         }
+    }else{
+        do{
+            $prénom_entraîneur = $bdd->query('SELECT prénom FROM users WHERE id = ' . $planning['entraîneur_id']);
+            echo '<td>' . $planning['jour'] . '</td>'.
+                '<td>' . $planning['heure_début'] . '</td>'.
+                '<td>' . $planning['heure_fin'] . '</td>'.
+                '<td>' . $prénom_entraîneur->fetch()[0] . '</td>';  
+        } while($planning = $reponse->fetch());
     }
-    do{
-        $prénom_entraîneur = $bdd->query('SELECT prénom FROM users WHERE id = ' . $planning['entraîneur_id']);
-        echo '<td>' . $planning['jour'] . '</td>'.
-            '<td>' . $planning['heure_début'] . '</td>'.
-            '<td>' . $planning['heure_fin'] . '</td>'.
-            '<td>' . $prénom_entraîneur->fetch()[0] . '</td>';  
-    } while($planning = $reponse->fetch());
+    
            
     echo '</tr>
     </tbody></table>';
