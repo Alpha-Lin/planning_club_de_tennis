@@ -9,24 +9,22 @@ if ($reponse->execute(array($_SESSION['id']))){
                 </tr>
             </thead>
             <tbody>
-                <tr>';
-    if(!($planning = $reponse->fetch())){
-        for($i = 0; $i < 4; $i++){
-            echo '<td></td>';
-        }
-    }else{
-        do{
-            $prénom_entraîneur = $bdd->query('SELECT prénom FROM users WHERE id = ' . $planning['entraîneur_id']);
-            echo '<td>' . $planning['jour'] . '</td>'.
-                '<td>' . $planning['heure_début'] . '</td>'.
-                '<td>' . $planning['heure_fin'] . '</td>'.
-                '<td>' . $prénom_entraîneur->fetch()[0] . '</td>';  
-        } while($planning = $reponse->fetch());
-    }
+                <tr>
+                    <td>Jour</td>
+                    <td>Heure de début</td>
+                    <td>Heure de fin</td>
+                    <td>Entraîneur</td>
+                </tr>';
     
+    while($planning = $reponse->fetch()){
+        $prénom_entraîneur = $bdd->query('SELECT prénom FROM users WHERE id = ' . $planning['entraîneur_id']);
+        echo '<tr><td>' . $planning['jour'] . '</td>'.
+            '<td>' . $planning['heure_début'] . '</td>'.
+            '<td>' . $planning['heure_fin'] . '</td>'.
+            '<td>' . $prénom_entraîneur->fetch()[0] . '</td></tr>';  
+    }
            
-    echo '</tr>
-    </tbody></table>';
+    echo '</tbody></table>';
 
     require 'inc/passwordChanger.php';
 }

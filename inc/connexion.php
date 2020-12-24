@@ -5,7 +5,7 @@ $bdd = new PDO('mysql:host=localhost;dbname=planning_tennis', 'root', ''); // us
 
 session_start();
 
-if (isset($_POST['motDePasse']) AND isset($_POST['login'])){
+if (isset($_POST['motDePasse'], $_POST['login'])){
 	if (!empty($_POST['motDePasse']) AND !empty($_POST['login'])){ // Pour se log, on vérifie si l'utilisateur a fourni des identifiants et s'ils correspondent avec ceux de la base de données
 		$login = explode("#", $_POST['login']);
 		
@@ -35,7 +35,7 @@ if (isset($_POST['motDePasse']) AND isset($_POST['login'])){
 			echo '<p>Erreur dans la requête à la BDD</p>';
 		}
 	}
-}else if (isset($_SESSION['prénom']) AND isset($_SESSION['id'])){ // Sinon on vérifie si une connexion est déjà existante
+}else if (isset($_SESSION['prénom'], $_SESSION['id'])){ // Sinon on vérifie si une connexion est déjà existante
 	$reponse = $bdd->prepare("SELECT typeCompte, entraîneur, nom FROM users WHERE prénom = ? AND id = ?"); // va chercher le hash de l'utilisateur
 
 	if ($reponse->execute(array($_SESSION['prénom'], $_SESSION['id']))) // vérifie que la requête a réussi

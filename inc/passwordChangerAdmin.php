@@ -18,7 +18,7 @@
 </form>
 
 <?php
-if (isset($_POST['newPassword']) AND isset($_POST['user'])){
+if (isset($_POST['newPassword'], $_POST['user'])){
     if (!empty($_POST['newPassword']) AND !empty($_POST['user'])){
         $req = $bdd->prepare('UPDATE users SET motDePasse = ? WHERE id = ?');
         if ($req->execute(array(password_hash($_POST['newPassword'], PASSWORD_ARGON2ID),
