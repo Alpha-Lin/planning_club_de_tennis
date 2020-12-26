@@ -12,8 +12,6 @@ try{
 	die('<p>Erreur lors de l\'accès à la base de donnée : </p>');
 }
 
-
-
 session_start();
 
 if (isset($_POST['motDePasse'], $_POST['login'])){
@@ -28,15 +26,15 @@ if (isset($_POST['motDePasse'], $_POST['login'])){
 			{
 				$_SESSION['prénom'] = $login[0];
 				$_SESSION['id'] = $login[1];
-				require 'inc/interface.php';
+				require 'php/user/interface.php';
 
-				echo '<a href="inc/logout.php">Déconnexion</p>';
+				echo '<a href="php/logout.php">Déconnexion</p>';
 			}else{
-				require 'inc/connexion.html';
+				require 'html/connexion.html';
 				echo '<p>MDP incorrect</p>';
 			}
 		}else{
-			require 'inc/connexion.html';
+			require 'html/connexion.html';
 			echo '<p>Nom ou Prénom incorrect</p>';
 		}
 	}
@@ -45,9 +43,9 @@ if (isset($_POST['motDePasse'], $_POST['login'])){
 
 	$reponse->execute(array($_SESSION['prénom'], $_SESSION['id']));
 	$infoUser = $reponse->fetch();
-	require 'inc/interface.php';
-	echo '<a href="inc/logout.php">Déconnexion</a>';
+	require 'php/user/interface.php';
+	echo '<a href="php/user/logout.php">Déconnexion</a>';
 }else{
-	require 'inc/connexion.html';
+	require 'html/connexion.html';
 }
 ?>

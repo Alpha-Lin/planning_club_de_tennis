@@ -28,9 +28,4 @@ while($planning = $reponse->fetch()){
         
 echo '</tbody></table>';
 
-require 'inc/passwordChanger.php';
-
-if ($infoUser[0]){ // Admin : peut créer et supprimer des horaires
-    require 'inc/admin.php';
-}
 ?>

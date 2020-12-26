@@ -1,6 +1,6 @@
 <h2>Changer le mot de passe d'un utilisateur</h2>
     
-<form action="index.php" method="POST">
+<form action="?id_f=3" method="POST">
 
     <label for="user">Utilisateur : </label>
     <select name="user" id="user">

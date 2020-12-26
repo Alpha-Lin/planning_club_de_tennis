@@ -1,6 +1,6 @@
 <h2>Ajouter un utilisateur : </h2>
 
-<form action="index.php" method="POST">
+<form action="?id_f=3" method="POST">
     <label for="nom">Nom : </label>
     <input name="nom" id="nom" type="text">
 
@@ -43,11 +43,11 @@ if (isset($_POST['prénom'], $_POST['nom'], $_POST['mdpInscription'], $_POST['bi
 $reponse = $bdd->query('SELECT id, prénom, nom FROM users');
 $users = $reponse->fetchAll();
 
-require 'inc/passwordChangerAdmin.php';
+require 'php/admin/passwordChangerAdmin.php';
 ?>
 
 <h2>Créer un entraînement : </h2>
-<form action="index.php" method="GET">
+<form action="?id_f=3" method="POST">
     <label for="date">Jour : </label>
     <input name="date" id="date" type="date" required>
 
@@ -66,7 +66,7 @@ require 'inc/passwordChangerAdmin.php';
         ?>
     </select>
 
-    <script src="ajout_user.js"></script>
+    <script src="js/ajout_user.js"></script>
 
     <div id="user_adding"></div>
 
@@ -76,27 +76,27 @@ require 'inc/passwordChangerAdmin.php';
     <input type="submit" value="Créer">
 </form>
 
-<?php if(isset($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur'])){ // Vérifie l'intégrité des données et insère le cours dans la BDD
-    if(!empty($_GET['date']) AND !empty($_GET['h_début']) AND !empty($_GET['h_fin']) AND !empty($_GET['entraîneur'])){
-        if(isset( $_GET['user_1']) AND !empty( $_GET['user_1'])){
+<?php if(isset($_POST['date'], $_POST['h_début'], $_POST['h_fin'], $_POST['entraîneur'])){ // Vérifie l'intégrité des données et insère le cours dans la BDD
+    if(!empty($_POST['date']) AND !empty($_POST['h_début']) AND !empty($_POST['h_fin']) AND !empty($_POST['entraîneur'])){
+        if(isset( $_POST['user_1']) AND !empty( $_POST['user_1'])){
             $req = $bdd->prepare('SELECT id FROM planning WHERE jour = ? AND heure_début = ? AND heure_fin = ? AND entraîneur_id = ?');
-            $req->execute(array($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur']));
+            $req->execute(array($_POST['date'], $_POST['h_début'], $_POST['h_fin'], $_POST['entraîneur']));
             if($req->fetch()){ // Vérifie si un cours est déjà programmé pour le jour, l'heure, et le prof sélectionnés
                 echo '<p>Un cours est déjà programmé à cette date pour cet entraîneur.</p>';
             }else{
                 $req = $bdd->prepare('INSERT INTO planning (jour, heure_début, heure_fin, entraîneur_id) VALUES (?, ?, ?, ?)');
-                $req->execute(array($_GET['date'], $_GET['h_début'], $_GET['h_fin'], $_GET['entraîneur']));
+                $req->execute(array($_POST['date'], $_POST['h_début'], $_POST['h_fin'], $_POST['entraîneur']));
                 $idUser = 1;
                 $usersInserted = array();
                 $req = $bdd->prepare('INSERT INTO users_in_planning (id_user, id_planning) VALUES (?, ' . $bdd->lastInsertId() . ')');
                 do{
-                    if(!in_array($_GET['user_' . $idUser], $usersInserted)){ // On vérifie que l'élève n'a pas été sélectionné 2 fois
+                    if(!in_array($_POST['user_' . $idUser], $usersInserted)){ // On vérifie que l'élève n'a pas été sélectionné 2 fois
                         
-                        $req->execute(array($_GET['user_' . $idUser]));
-                        $usersInserted[] = $_GET['user_' . $idUser];
+                        $req->execute(array($_POST['user_' . $idUser]));
+                        $usersInserted[] = $_POST['user_' . $idUser];
                     }
                     $idUser++;
-                }while(isset($_GET['user_' . $idUser]) AND !empty($_GET['user_' . $idUser]));
+                }while(isset($_POST['user_' . $idUser]) AND !empty($_POST['user_' . $idUser]));
                 echo '<p>Cours inséré.</p>';
             }
         }else{
@@ -120,6 +120,7 @@ $maxUsers = 0;
 $table = "";
 
 $nbUsersPrepare = $bdd->prepare('SELECT COUNT(id) FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ?');
+$prénom_entraîneur = $bdd->prepare('SELECT prénom FROM users WHERE id = ?');
 $utilisateurPlanning = $bdd->prepare('SELECT nom, prénom FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ?');
 
 while($planning = $reponse->fetch()){
@@ -131,7 +132,7 @@ while($planning = $reponse->fetch()){
     
     $prénom_entraîneur->execute(array($planning['entraîneur_id']));
 
-    $table .= '<tr><td><a href="?id_del=' . $planning['id'] . '">X</a></td>
+    $table .= '<tr><td><a href="?id_f=3&id_del=' . $planning['id'] . '">X</a></td>
             <td>' . $planning['jour'] . '</td>
             <td>' . $planning['heure_début'] . '</td>
             <td>' . $planning['heure_fin'] . '</td>

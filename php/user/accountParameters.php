@@ -1,6 +1,6 @@
 <h2>Changer de mot de passe</h2>
     
-<form action="index.php" method="POST">
+<form action="?id_f=2" method="POST">
 
     <label for="newPasswordUser">Nouveau mot de passe : </label>
     <input name="newPasswordUser" id="newPasswordUser" type="password" required>
