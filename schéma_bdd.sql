@@ -14,13 +14,13 @@ CREATE TABLE planning ( -- chaque instance représentera un entraînement unique
     heure_début TIME NOT NULL,
     heure_fin TIME NOT NULL,
     entraîneur_id INT NOT NULL,
-    modifié BOOLEAN,
     FOREIGN KEY(entraîneur_id) REFERENCES users (id)
 );
 
 CREATE TABLE users_in_planning ( -- lie un utilisateur à un planning via leurs id
     id_user INT NOT NULL,
-    id_planning  INT NOT NULL,
+    id_planning INT NOT NULL,
+    notifié BOOLEAN,
     FOREIGN KEY(id_user) REFERENCES users (id) ON DELETE CASCADE,
     FOREIGN KEY(id_planning) REFERENCES planning (id) ON DELETE CASCADE
 );

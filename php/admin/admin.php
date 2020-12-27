@@ -8,7 +8,7 @@ $users = $reponse->fetchAll();
 
 require 'php/admin/passwordChangerAdmin.php';
 
-require 'php/admin/ajoutEntraînement.php';
+require 'php/admin/editEntraînement.php';
 
 require 'php/admin/showPlannings.php';
 
