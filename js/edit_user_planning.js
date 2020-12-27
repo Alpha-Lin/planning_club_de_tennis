@@ -18,7 +18,6 @@ function annuler_change(id, infosCours){ // Annule le mode édition
     document.getElementById("décalage_" + id).innerHTML = "<button type='button' onclick='décaler(" + id + ")'>Éditer le cours</button>"
     let dataCours = document.getElementsByClassName("planning_" + id)
     for (let i = 0; i < dataCours.length; i++) {
-        console.log(infosCours)
         dataCours[i].textContent = infosCours[i]
     }
 }
@@ -46,14 +45,12 @@ function décaler(id){ // Mode édition
         }
         if (i < 3){
             dataCours[i].innerHTML = "<input value='" + dataCours[i].textContent +"' type='" + typeInput + "' name='" + idInput + "'/>"
+        }else if (i == 3){
+            dataCours[i].innerHTML = "<select name='entraîneur_Change'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option>" + entraîneurs + "</select>"
         }else{
-            if (i == 3){
-                dataCours[i].innerHTML = "<select name='entraîneur_Change'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option>" + entraîneurs + "</select>"
-            }else{
-                dataCours[i].innerHTML = "<select name='user_edditing_" + (i - 3) + "' id='user_edditing_" + id + "_" + (i - 3) + "'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option></select>"
-                add_user('user_edditing_' + id + "_" + (i - 3))
-            }
+            dataCours[i].innerHTML = "<select name='user_edditing_" + (i - 3) + "' id='user_edditing_" + id + "_" + (i - 3) + "'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option></select>"
+            add_user('user_edditing_' + id + "_" + (i - 3))
         }
     }
-    document.getElementById("décalage_" + id).innerHTML = '<button type="button" onclick="annuler_change(' + id + ', [' + infosCours + '])">Annuler</button><input type="submit" value="Confirmer"></button><input name="id_planning_edit"  value=' + id + ' hidden/>'
+    document.getElementById("décalage_" + id).innerHTML = '<button type="button" onclick="annuler_change(' + id + ', [' + infosCours + '])">Annuler</button><input type="submit" value="Confirmer"></button><input name="id_planning_edit" value=' + id + ' hidden/>'
 }
