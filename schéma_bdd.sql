@@ -14,8 +14,7 @@ CREATE TABLE planning ( -- chaque instance représentera un entraînement unique
     heure_début TIME NOT NULL,
     heure_fin TIME NOT NULL,
     entraîneur_id INT NOT NULL,
-    ancien_planning INT,
-    FOREIGN KEY(ancien_planning) REFERENCES planning (id),
+    modifié BOOLEAN,
     FOREIGN KEY(entraîneur_id) REFERENCES users (id)
 );
 

@@ -14,29 +14,46 @@ function del_user(div_id){
     nb_user--
 }
 
-function décaler(id, jour, h_début, h_fin, id_entraîneur, div_id, listeEntraîneurs){
-    document.getElementById("cours_décalage").innerHTML = '<form action="?id_f=3" method="POST"> \
-    <label for="dateChange">Jour : </label> \
-    <input name="dateChange" id="dateChange" type="date" value="' + jour +'" required> \
-    \
-    <label for="h_débutChange">Horaire début : </label> \
-    <input name="h_débutChange" id="h_débutChange" type="time" value="' + h_début +'" required> \
-    \
-    <label for="h_finChange">Horaire fin : </label> \
-    <input name="h_finChange" id="h_finChange" type="time" value="' + h_fin +'" required> \
-    \
-    <label for="entraîneurChange">Entraîneur : </label> \
-    <select name="entraîneurChange" id="entraîneurChange">'
-    + listeEntraîneurs +
-    '</select> \
-    \
-    <div id="user_changing"></div> \
-    \
-    <button type="button" onclick="add_user(\'' + div_id + '\')">Ajouter un utilisateur</button> \
-    <button type="button" onclick="del_user(\'' + div_id + '\')">Supprimer un utilisateur</button> \
-    \
-    <input type="hidden" value=' + id + '></input> \
-    \
-    <input type="submit" value="Modifier"> \
-</form>'
+function annuler_change(id, infosCours){
+    document.getElementById("décalage_" + id).innerHTML = "<button type='button' onclick='décaler(" + id + ")'>Éditer le cours</button>"
+    let dataCours = document.getElementsByClassName("planning_" + id)
+    for (let i = 0; i < dataCours.length; i++) {
+        console.log(infosCours)
+        dataCours[i].textContent = infosCours[i]
+    }
+}
+
+function décaler(id){
+    let dataCours = document.getElementsByClassName("planning_" + id)
+    let typeInput = ""
+    let idInput = ""
+    let infosCours = []
+    for (let i = 0; i < dataCours.length; i++) {
+        infosCours.push("'" + dataCours[i].textContent + "'")
+        switch(i){
+            case 0:
+                typeInput = "date"
+                idInput = "dateChange"
+                break
+            case 1:
+                typeInput = "time"
+                idInput = "h_début_change"
+                break
+            case 2:
+                typeInput = "time"
+                idInput = "h_fin_Change"
+                break
+        }
+        if (i < 3){
+            dataCours[i].innerHTML = "<input value='" + dataCours[i].textContent +"' type='" + typeInput + "' id='" + idInput + "'/>"
+        }else{
+            if (i == 3){
+                dataCours[i].innerHTML = "<select id='entraîneurChange'>" + entraîneurs + "</select>"
+            }else{
+                dataCours[i].innerHTML = "<select id='user_edditing_" + id + "_" + (i -3) + "'></select>"
+                add_user('user_edditing_' + id + "_" + (i -3))
+            }
+        }
+    }
+    document.getElementById("décalage_" + id).innerHTML = '<button type="button" onclick="annuler_change(' + id + ', [' + infosCours + '])">Annuler</button><input type="submit" value="Confirmer"></button>'
 }

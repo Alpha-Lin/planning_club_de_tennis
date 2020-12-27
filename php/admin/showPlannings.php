@@ -17,18 +17,19 @@ while($planning = $reponse->fetch()){
     }
     
     $prénom_entraîneur->execute(array($planning['entraîneur_id']));
+    $prénom_entraîneur_clair = $prénom_entraîneur->fetch()[0];
 
     $table .= '<tr><td><a href="?id_f=3&id_del=' . $planning['id'] . '">X</a></td>
-            <td><button type="button" onclick="décaler(' . $planning['id'] . ', \'' . $planning['jour'] . '\', \'' . $planning['heure_début'] . '\', \'' . $planning['heure_fin'] . '\', ' . $planning['entraîneur_id'] . ', \'user_changing\', \'' . $listeEntraîneurs . '\')">Décaler le cours</button></td>
-            <td>' . $planning['jour'] . '</td>
-            <td>' . $planning['heure_début'] . '</td>
-            <td>' . $planning['heure_fin'] . '</td>
-            <td>' . $prénom_entraîneur->fetch()[0] . '</td>';
+            <td id="décalage_' . $planning['id'] . '"><button type="button" onclick="décaler(' . $planning['id'] . ')">Éditer le cours</button></td>
+            <td class="planning_' . $planning['id'] . '">' . $planning['jour'] . '</td>
+            <td class="planning_' . $planning['id'] . '">' . $planning['heure_début'] . '</td>
+            <td class="planning_' . $planning['id'] . '">' . $planning['heure_fin'] . '</td>
+            <td class="planning_' . $planning['id'] . '">' . $prénom_entraîneur_clair . '</td>';
 
     $utilisateurPlanning->execute(array($planning['id']));
 
     while($nomUser = $utilisateurPlanning->fetch()){
-        $table .= '<td>' . $nomUser['nom'] . ' ' . $nomUser['prénom'] . '</td>';
+        $table .= '<td class="planning_' . $planning['id'] . '">' . $nomUser['nom'] . ' ' . $nomUser['prénom'] . '</td>';
     }
 
     $table .= '</tr>';  
@@ -38,7 +39,7 @@ if($maxUsers){
     $maxUsers -= 1;
 }
 
-echo '<table>
+echo '<form action="?id_f=3" method="POST"><table>
         <thead>
             <tr>
                 <th colspan="' . (7 + $maxUsers) . '">Plannings</th>
@@ -47,7 +48,7 @@ echo '<table>
         <tbody>
             <tr>
                 <td>Supprimer</td>
-                <td>Décaler</td>
+                <td>Éditer</td>
                 <td>Jour</td>
                 <td>Heure de début</td>
                 <td>Heure de fin</td>
@@ -55,6 +56,6 @@ echo '<table>
                 <td colspan="' . (1 + $maxUsers) . '">Utilisateurs</td>
             </tr>'
         . $table .
-        '</tbody></table>';
+        '</tbody></table></form>';
 
 ?>
