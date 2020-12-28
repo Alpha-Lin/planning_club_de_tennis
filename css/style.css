@@ -6,6 +6,10 @@ thead {
     background-color: gray
 }
 
-tbody {
+.alreadySeen{
+    background-color: rgb(33, 64, 201)
+}
+
+.neverSeen{
     background-color: green
 }

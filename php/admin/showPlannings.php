@@ -19,7 +19,7 @@ while($planning = $reponse->fetch()){
     $prénom_entraîneur->execute(array($planning['entraîneur_id']));
     $prénom_entraîneur_clair = $prénom_entraîneur->fetch()[0];
 
-    $table .= '<tr><td><a href="?id_f=3&id_del=' . $planning['id'] . '">X</a></td>
+    $table .= '<tr class="alreadySeen"><td><a href="?id_f=3&id_del=' . $planning['id'] . '">X</a></td>
             <td id="décalage_' . $planning['id'] . '"><button type="button" onclick="décaler(' . $planning['id'] . ')">Éditer le cours</button></td>
             <td class="planning_' . $planning['id'] . '">' . $planning['jour'] . '</td>
             <td class="planning_' . $planning['id'] . '">' . $planning['heure_début'] . '</td>
@@ -44,17 +44,17 @@ echo '<form action="?id_f=3" method="POST"><table>
             <tr>
                 <th colspan="' . (7 + $maxUsers) . '">Plannings</th>
             </tr>
-        </thead>
-        <tbody>
             <tr>
-                <td>Supprimer</td>
-                <td>Éditer</td>
-                <td>Jour</td>
-                <td>Heure de début</td>
-                <td>Heure de fin</td>
-                <td>Entraîneur</td>
-                <td colspan="' . (1 + $maxUsers) . '">Utilisateurs</td>
-            </tr>'
+                <th>Supprimer</th>
+                <th>Éditer</th>
+                <th>Jour</th>
+                <th>Heure de début</th>
+                <th>Heure de fin</th>
+                <th>Entraîneur</th>
+                <th colspan="' . (1 + $maxUsers) . '">Utilisateurs</th>
+            </tr>
+        </thead>
+        <tbody>'
         . $table .
         '</tbody></table></form>';
 

@@ -1,3 +1,2 @@
 - Permettre de supprimer un utilisateur
-- Afficher une couleur différente pour les cours nouvellement ajoutés
 - Afficher la planning des entraîneurs
