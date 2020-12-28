@@ -2,7 +2,7 @@
 // TODO :  afficher le planning en tableau
 $reponse = $bdd->prepare('SELECT * FROM planning JOIN users_in_planning ON id_planning = id WHERE id_user = ?');
 $reponse->execute(array($_SESSION['id']));
-echo '<form action="" method="GET"><table>
+echo '<form><table>
         <thead>
             <tr>
                 <th colspan="5">Planning pour ' . htmlspecialchars($infoUser[2]) . ' ' . htmlspecialchars($_SESSION['prénom']) . '</th>
@@ -22,6 +22,8 @@ $prénom_entraîneur = $bdd->prepare('SELECT prénom FROM users WHERE id = ?');
 $notifié = $bdd->prepare('SELECT notifié FROM users_in_planning JOIN users ON id_user = ? AND id_planning = ?');
 $notifiéEdit = $bdd->prepare('UPDATE users_in_planning SET notifié = 0 WHERE id_user = ? AND id_planning = ?');
 
+$isNeverSeen = false;
+
 while($planning = $reponse->fetch()){
     $prénom_entraîneur->execute(array($planning['entraîneur_id']));
     $notifié->execute(array($_SESSION['id'], $planning['id']));
@@ -32,6 +34,7 @@ while($planning = $reponse->fetch()){
         $notifiéEdit->execute(array($_SESSION['id'], $planning['id']));
     }
     else if($notifié->fetch()['notifié']){
+        $isNeverSeen = true;
         $classPlanning = 'neverSeen';
     }
     echo '<tr class="' . $classPlanning . '"><td>' . $planning['jour'] . '</td>
@@ -50,9 +53,12 @@ while($planning = $reponse->fetch()){
     echo '</td></tr>';
 }
         
-echo        '</tbody>
-        </table>
-    <input type="submit" value="Valider"/>
-</form>';
+echo '</tbody></table>';
+
+if($isNeverSeen){
+    echo '<input type="submit" value="Valider"/>';
+} 
+
+echo '</form>';
 
 ?>
