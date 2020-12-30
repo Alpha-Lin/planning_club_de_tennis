@@ -1,13 +1,18 @@
 let nb_user_adding = 0
-let nb_user_edditing = 0
+let nb_user_edditing = []
+let infosCours = []
+let nb_user_removed = []
 
-function add_user(div_id, compteur){ // Ajoute un dropdown de users
+function add_user(div_id, compteur, div_id_parent){ // Ajoute un dropdown de users
     let div_users = document.createElement('div')
-    div_users.id = "div_" + div_id + "_" + compteur
+
+    const nameDiv = div_id + "_" + compteur
+
+    div_users.id = "div_" + nameDiv
 
     let users_show = document.createElement('select')
-    users_show.name = div_id + "_" + compteur
-    users_show.id = div_id + "_" + compteur
+    users_show.name = nameDiv
+    users_show.id = nameDiv
     utilisateurs.forEach(user => {
         let option = document.createElement('option')
         option.text = user['nom'] === null ? user['prénom'] : user['nom'] + ' ' + user['prénom']
@@ -16,34 +21,50 @@ function add_user(div_id, compteur){ // Ajoute un dropdown de users
     })
     
     let label = document.createElement('label')
-    label.htmlFor = div_id + "_" + compteur
-    label.textContent = "Élève : " + compteur
+    label.htmlFor = nameDiv
+    label.textContent = "Élève " + compteur + " : "
 
     div_users.appendChild(label)
     div_users.appendChild(users_show)
-    document.getElementById(div_id).appendChild(div_users)
+    if(typeof div_id_parent === 'undefined'){
+        div_id_parent = div_id
+    }
+    document.getElementById(div_id_parent).appendChild(div_users)
+    return div_users
 }
 
 function del_user(div_id_compteur){ // Supprimer un dropdown de users
-    console.log(div_id_compteur)
     document.getElementById(div_id_compteur).remove()
 }
 
-function annuler_change(id, infosCours){ // Annule le mode édition
-    document.getElementById("décalage_" + id).innerHTML = "<button type='button' onclick='décaler(" + id + ")'>Éditer le cours</button>"
-    let dataCours = document.getElementsByClassName("planning_" + id)
-    for (let i = 0; i < dataCours.length; i++) {
-        dataCours[i].textContent = infosCours[i]
+function annuler_change(id){ // Annule le mode édition
+    parentTr = document.getElementById("tr_planning_" + id)
+    nb_user_removed[parentTr.id] = 0
+    parentTr.innerHTML = infosCours[id]
+}
+
+function save_deleted_user(parentId, id, idPlanning){ // sauvegarde les ids des élèves supprimés
+    if(typeof nb_user_removed[parentId.parentElement.id] === 'undefined'){
+        nb_user_removed[parentId.parentElement.id] = 0
     }
+    nb_user_removed[parentId.parentElement.id]++
+    
+    let hidden_removed_id_user = document.createElement('input')
+    hidden_removed_id_user.value = id
+    hidden_removed_id_user.type = 'hidden'
+    hidden_removed_id_user.name = "removed_user_" + idPlanning + "_" + nb_user_removed[parentId.parentElement.id]
+
+    document.getElementById(parentId.parentElement.id).appendChild(hidden_removed_id_user)
+    del_user(parentId.id)
 }
 
 function décaler(id){ // Mode édition
     let dataCours = document.getElementsByClassName("planning_" + id)
     let typeInput = ""
     let idInput = ""
-    let infosCours = []
+    infosCours[id] = document.getElementById("tr_planning_" + id).innerHTML
+    nb_user_edditing[id] = 0
     for (let i = 0; i < dataCours.length; i++) {
-        infosCours.push("'" + dataCours[i].textContent + "'")
         switch(i){
             case 0:
                 typeInput = "date"
@@ -63,9 +84,18 @@ function décaler(id){ // Mode édition
         }else if (i == 3){
             dataCours[i].innerHTML = "<select name='entraîneur_Change'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option>" + entraîneurs + "</select>"
         }else{
-            dataCours[i].innerHTML = "<select name='user_edditing_" + (i - 3) + "' id='user_edditing_" + id + "_" + (i - 3) + "'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option></select><button type='button' onclick='del_user(this.parentElement.id)'>Supprimer</button>" //TODO
-            add_user('user_edditing_' + id + "_" + (i - 3))
+            nb_user_edditing[id]++
+            nom_élève = dataCours[i].textContent.replace(/'/g, '')
+            idUserDefault = dataCours[i].id.replace("planning_" + id + "_", '')
+            console.log(idUserDefault)
+            dataCours[i].innerHTML = ""
+            let div_user_temp = add_user("planning_" + id, nb_user_edditing[id], dataCours[i].id)
+            dataCours[i].getElementsByTagName('label')[0].remove()
+            dataCours[i].getElementsByTagName('select')[0].innerHTML += "<option value='' selected disabled hidden>" + nom_élève + "</option>"
+
+            div_user_temp.innerHTML += "<button type='button' onclick='save_deleted_user(this.parentElement.parentElement, " + idUserDefault + ", " + id +")'>Supprimer</button>"
         }
     }
-    document.getElementById("décalage_" + id).innerHTML = '<button type="button" onclick="annuler_change(' + id + ', [' + infosCours + '])">Annuler</button><input type="submit" value="Confirmer"></button><input name="id_planning_edit" value=' + id + ' hidden/>'
+  
+    document.getElementById("décalage_" + id).innerHTML = '<button type="button" onclick=\'annuler_change(' + id + ')\'>Annuler</button><input type="submit" value="Confirmer"></button><input name="id_planning_edit" value=' + id + ' hidden/>'
 }

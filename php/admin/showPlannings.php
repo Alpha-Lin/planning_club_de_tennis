@@ -21,7 +21,7 @@ while($planning = $reponse->fetch()){
 
     $planningID = 'planning_' . $planning['id'];
 
-    $table .= '<tr class="alreadySeen"><td><a href="?id_f=3&id_del=' . $planning['id'] . '">X</a></td>
+    $table .= '<tr class="alreadySeen" id="tr_' . $planningID . '"><td><a href="?id_f=3&id_del=' . $planning['id'] . '">X</a></td>
             <td id="décalage_' . $planning['id'] . '"><button type="button" onclick="décaler(' . $planning['id'] . ')">Éditer le cours</button></td>
             <td class="' . $planningID . '">' . $planning['jour'] . '</td>
             <td class="' . $planningID . '">' . $planning['heure_début'] . '</td>
