@@ -33,9 +33,38 @@ if (isset($_POST['prénom'], $_POST['nom'], $_POST['mdpInscription'], $_POST['bi
                             isset($_POST['admin']) ? 1 : 0,
                             !empty($_POST['birthday']) ? $_POST['birthday'] : Null)
         );
-        echo '<p>User inséré</p>';
+        echo '<p>Utilisateur inséré.</p>';
     }else{
         echo '<p>Erreur lors de l\'insertion des données de l\'utilisateur</p>';
     }
 }
 ?>
+
+<h2>Supprimer un utilisateur : </h2>
+
+<form action="?id_f=3" method="POST">
+    <label for="user_id_remove">Utilisateur : </label>
+    <select name="user_id_remove" id="user_id_remove">
+    <?php
+        $userRemoved = false;
+        if (isset($_POST['user_id_remove']) AND !empty($_POST['user_id_remove'])){ // Pour supprimer un utilisateur
+            $req = $bdd->prepare('DELETE FROM users WHERE id = ?');
+            $req->execute(array($_POST['user_id_remove']));
+            $userRemoved = true;
+        }
+
+        // prépare à l'avance toutes les infos des utilisateurs
+        $reponse = $bdd->query('SELECT id, prénom, nom FROM users'); 
+        $users = $reponse->fetchAll(); 
+
+        foreach($users as $user){
+            echo '<option value=' . $user['id'] . '>' . $user['nom'] . ' ' . $user['prénom'] . '</option>';
+        }?>
+    </select>
+
+    <input type="submit" value="Envoyer">
+</form>
+
+<?php if($userRemoved){
+    echo '<p>Utilisateur supprimé.</p>';
+}?>

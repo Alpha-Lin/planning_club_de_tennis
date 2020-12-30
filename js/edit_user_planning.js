@@ -17,7 +17,7 @@ function add_user(div_id, compteur){ // Ajoute un dropdown de users
     
     let label = document.createElement('label')
     label.htmlFor = div_id + "_" + compteur
-    label.textContent = "Élève " + compteur
+    label.textContent = "Élève : " + compteur
 
     div_users.appendChild(label)
     div_users.appendChild(users_show)

@@ -1,10 +1,6 @@
 <?php
 
-require 'php/admin/ajoutUser.php';
-
-// prépare à l'avance toutes les infos des utilisateurs
-$reponse = $bdd->query('SELECT id, prénom, nom FROM users');
-$users = $reponse->fetchAll();
+require 'php/admin/editUser.php';
 
 require 'php/admin/passwordChangerAdmin.php';
 

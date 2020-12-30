@@ -6,7 +6,7 @@
     <select name="user" id="user">
         <?php
         foreach($users as $user){
-            echo '<option value=' . $user['id'] . '>' . $user['prénom'] . ' ' . $user['nom'] . '</option>';
+            echo '<option value=' . $user['id'] . '>' . $user['nom'] . ' ' . $user['prénom'] . '</option>';
         }
         ?>
     </select>
