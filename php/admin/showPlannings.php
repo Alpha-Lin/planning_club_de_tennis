@@ -7,7 +7,7 @@ $table = "";
 
 $nbUsersPrepare = $bdd->prepare('SELECT COUNT(id) FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ?');
 $prénom_entraîneur = $bdd->prepare('SELECT prénom FROM users WHERE id = ?');
-$utilisateurPlanning = $bdd->prepare('SELECT nom, prénom FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ?');
+$utilisateurPlanning = $bdd->prepare('SELECT id, nom, prénom FROM users JOIN users_in_planning ON id = id_user WHERE id_planning = ?');
 
 while($planning = $reponse->fetch()){
     $nbUsersPrepare->execute(array($planning['id']));
@@ -19,17 +19,19 @@ while($planning = $reponse->fetch()){
     $prénom_entraîneur->execute(array($planning['entraîneur_id']));
     $prénom_entraîneur_clair = $prénom_entraîneur->fetch()[0];
 
+    $planningID = 'planning_' . $planning['id'];
+
     $table .= '<tr class="alreadySeen"><td><a href="?id_f=3&id_del=' . $planning['id'] . '">X</a></td>
             <td id="décalage_' . $planning['id'] . '"><button type="button" onclick="décaler(' . $planning['id'] . ')">Éditer le cours</button></td>
-            <td class="planning_' . $planning['id'] . '">' . $planning['jour'] . '</td>
-            <td class="planning_' . $planning['id'] . '">' . $planning['heure_début'] . '</td>
-            <td class="planning_' . $planning['id'] . '">' . $planning['heure_fin'] . '</td>
-            <td class="planning_' . $planning['id'] . '">' . $prénom_entraîneur_clair . '</td>';
+            <td class="' . $planningID . '">' . $planning['jour'] . '</td>
+            <td class="' . $planningID . '">' . $planning['heure_début'] . '</td>
+            <td class="' . $planningID . '">' . $planning['heure_fin'] . '</td>
+            <td class="' . $planningID . '">' . $prénom_entraîneur_clair . '</td>';
 
     $utilisateurPlanning->execute(array($planning['id']));
 
     while($nomUser = $utilisateurPlanning->fetch()){
-        $table .= '<td class="planning_' . $planning['id'] . '">' . $nomUser['nom'] . ' ' . $nomUser['prénom'] . '</td>';
+        $table .= '<td id="' . $planningID . '_' . $nomUser['id']  . '" class="' . $planningID . '">' . $nomUser['nom'] . ' ' . $nomUser['prénom'] . '</td>';
     }
 
     $table .= '</tr>';  

@@ -28,8 +28,8 @@
     
     <div id="user_adding"></div>
 
-    <button type="button" onclick="add_user('user_adding')">Ajouter un utilisateur</button>
-    <button type="button" onclick="del_user('user_adding')">Supprimer un utilisateur</button>
+    <button type="button" onclick="nb_user_adding++;add_user('user_adding', nb_user_adding)">Ajouter un utilisateur</button>
+    <button type="button" onclick="del_user('div_user_adding_' + nb_user_adding);nb_user_adding--">Supprimer un utilisateur</button>
 
     <input type="submit" value="Créer">
 </form>

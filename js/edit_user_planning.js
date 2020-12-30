@@ -1,17 +1,32 @@
-let nb_user = 0
+let nb_user_adding = 0
+let nb_user_edditing = 0
 
-function add_user(div_id){ // Ajoute un dropdown de users
-    nb_user++
-    let users_show = "<div id=\"div_" + div_id + "_" + nb_user + "\"><label for=" + div_id + "\"_" + nb_user + "\">Élève " + nb_user + " : </label><select name=\"" + div_id + "_" + nb_user + "\" id=\"" + div_id + "_" + nb_user + "\">" 
+function add_user(div_id, compteur){ // Ajoute un dropdown de users
+    let div_users = document.createElement('div')
+    div_users.id = "div_" + div_id + "_" + compteur
+
+    let users_show = document.createElement('select')
+    users_show.name = div_id + "_" + compteur
+    users_show.id = div_id + "_" + compteur
     utilisateurs.forEach(user => {
-        users_show += "<option value=" + user['id'] + ">" + (user['nom'] === null ? user['prénom'] : user['nom'] + ' ' + user['prénom'])
+        let option = document.createElement('option')
+        option.text = user['nom'] === null ? user['prénom'] : user['nom'] + ' ' + user['prénom']
+        option.value = user['id']
+        users_show.appendChild(option)
     })
-    document.getElementById(div_id).innerHTML += users_show
+    
+    let label = document.createElement('label')
+    label.htmlFor = div_id + "_" + compteur
+    label.textContent = "Élève " + compteur
+
+    div_users.appendChild(label)
+    div_users.appendChild(users_show)
+    document.getElementById(div_id).appendChild(div_users)
 }
 
-function del_user(div_id){ // Supprimer un dropdown de users
-    document.getElementById("div_" + div_id + "_" + nb_user).remove()
-    nb_user--
+function del_user(div_id_compteur){ // Supprimer un dropdown de users
+    console.log(div_id_compteur)
+    document.getElementById(div_id_compteur).remove()
 }
 
 function annuler_change(id, infosCours){ // Annule le mode édition
@@ -48,7 +63,7 @@ function décaler(id){ // Mode édition
         }else if (i == 3){
             dataCours[i].innerHTML = "<select name='entraîneur_Change'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option>" + entraîneurs + "</select>"
         }else{
-            dataCours[i].innerHTML = "<select name='user_edditing_" + (i - 3) + "' id='user_edditing_" + id + "_" + (i - 3) + "'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option></select>"
+            dataCours[i].innerHTML = "<select name='user_edditing_" + (i - 3) + "' id='user_edditing_" + id + "_" + (i - 3) + "'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option></select><button type='button' onclick='del_user(this.parentElement.id)'>Supprimer</button>" //TODO
             add_user('user_edditing_' + id + "_" + (i - 3))
         }
     }
