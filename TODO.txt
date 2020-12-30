@@ -1,2 +1,2 @@
-- Permettre de supprimer un utilisateur d'un planning
+- Permettre d'ajouter un utilisateur à un planning
 - Afficher la planning des entraîneurs
