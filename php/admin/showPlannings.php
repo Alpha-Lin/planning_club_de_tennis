@@ -44,7 +44,7 @@ if($maxUsers){
 echo '<form action="?id_f=3" method="POST"><table>
         <thead>
             <tr>
-                <th colspan="' . (7 + $maxUsers) . '">Plannings</th>
+                <th colspan="' . (7 + $maxUsers) . '" class="editable_length">Plannings</th>
             </tr>
             <tr>
                 <th>Supprimer</th>
@@ -53,7 +53,7 @@ echo '<form action="?id_f=3" method="POST"><table>
                 <th>Heure de début</th>
                 <th>Heure de fin</th>
                 <th>Entraîneur</th>
-                <th colspan="' . (1 + $maxUsers) . '">Utilisateurs</th>
+                <th colspan="' . (1 + $maxUsers) . '" class="editable_length">Utilisateurs</th>
             </tr>
         </thead>
         <tbody>'

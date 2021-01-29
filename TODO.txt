@@ -1,2 +1,1 @@
-- Permettre d'ajouter un utilisateur à un planning
 - Afficher la planning des entraîneurs

@@ -58,13 +58,19 @@ function save_deleted_user(parentId, id, idPlanning){ // sauvegarde les ids des 
     del_user(parentId.id)
 }
 
+function add_length(){
+    Array.prototype.forEach.call(document.getElementsByClassName("editable_length"), function (element) {
+        element.colSpan += 1
+    })
+}
+
 function décaler(id){ // Mode édition
     let dataCours = document.getElementsByClassName("planning_" + id)
     let typeInput = ""
     let idInput = ""
     infosCours[id] = document.getElementById("tr_planning_" + id).innerHTML
     nb_user_edditing[id] = 0
-    for (let i = 0; i < dataCours.length; i++) {
+    for (let i = 0; i < dataCours.length + 1; i++) {
         switch(i){
             case 0:
                 typeInput = "date"
@@ -83,11 +89,35 @@ function décaler(id){ // Mode édition
             dataCours[i].innerHTML = "<input value='" + dataCours[i].textContent +"' type='" + typeInput + "' name='" + idInput + "'/>"
         }else if (i == 3){
             dataCours[i].innerHTML = "<select name='entraîneur_Change'><option value='' selected disabled hidden>" + dataCours[i].textContent + "</option>" + entraîneurs + "</select>"
+        }else if (i == dataCours.length){
+            nb_user_edditing[id] = 0
+            let button_add_user = document.createElement('button')
+            button_add_user.type = 'button'
+            button_add_user.onclick = function(){
+                let new_User = document.createElement('td')
+                nb_user_edditing[id]++
+                new_User.id = "planning_" + id + "&_" + nb_user_edditing[id]
+                
+                document.getElementById("tr_planning_" + id).appendChild(new_User)
+
+                add_user("planning_" + id + "&" , nb_user_edditing[id], new_User.id)
+
+                // Supprime le label "Élève : n"
+                new_User.getElementsByTagName('label')[0].remove()
+
+                new_User.innerHTML += '<button type="button" onclick=\'del_user("' + new_User.id + '")\'>Supprimer</button>'
+                document.getElementById("tr_planning_" + id).removeChild(button_add_user)
+                document.getElementById("tr_planning_" + id).appendChild(button_add_user)
+                add_length()
+            }
+            // Créer le boutton "Ajouter un utilisateur"
+            button_add_user.textContent = 'Ajouter un utilisateur'
+            document.getElementById("tr_planning_" + id).appendChild(button_add_user)
+            add_length()
         }else{
             nb_user_edditing[id]++
             nom_élève = dataCours[i].textContent.replace(/'/g, '')
             idUserDefault = dataCours[i].id.replace("planning_" + id + "_", '')
-            console.log(idUserDefault)
             dataCours[i].innerHTML = ""
             let div_user_temp = add_user("planning_" + id, nb_user_edditing[id], dataCours[i].id)
             dataCours[i].getElementsByTagName('label')[0].remove()
@@ -96,6 +126,6 @@ function décaler(id){ // Mode édition
             div_user_temp.innerHTML += "<button type='button' onclick='save_deleted_user(this.parentElement.parentElement, " + idUserDefault + ", " + id +")'>Supprimer</button>"
         }
     }
-  
+
     document.getElementById("décalage_" + id).innerHTML = '<button type="button" onclick=\'annuler_change(' + id + ')\'>Annuler</button><input type="submit" value="Confirmer"></button><input name="id_planning_edit" value=' + id + ' hidden/>'
 }

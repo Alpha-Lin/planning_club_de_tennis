@@ -96,10 +96,10 @@ if(isset($_POST['date_Change'], $_POST['h_début_Change'], $_POST['h_fin_Change'
         $idUser = 1;
         $usersInserted = [];
         $req = $bdd->prepare('INSERT INTO users_in_planning (id_user, id_planning, notifié) VALUES (?, ?, 1)');
-        $vérif_planning = $bdd->query('SELECT id FROM users JOIN users_in_planning ON id = id_user');
-        $vérif_planning = $vérif_planning->fetchAll(PDO::FETCH_COLUMN, 0);
-        $nameVariableUser = 'planning_' . $_POST['id_planning_edit'] .  '_' . $idUser;
+        $nameVariableUser = 'planning_' . $_POST['id_planning_edit'] .  '&_' . $idUser;
         while(isset($_POST[$nameVariableUser]) AND !empty($_POST[$nameVariableUser])){
+            $vérif_planning = $bdd->query('SELECT id FROM users JOIN users_in_planning ON id = id_user');
+            $vérif_planning = $vérif_planning->fetchAll(PDO::FETCH_COLUMN, 0);
             if(!in_array($_POST[$nameVariableUser], $usersInserted)){ // On vérifie que l'élève n'a pas été sélectionné plusieurs fois
                 if(!in_array($_POST[$nameVariableUser], $vérif_planning)){ // On vérifie que l'élève n'y est pas plusieurs fois
                     $req->execute(array($_POST[$nameVariableUser], $_POST['id_planning_edit']));
@@ -111,17 +111,26 @@ if(isset($_POST['date_Change'], $_POST['h_début_Change'], $_POST['h_fin_Change'
                 warn_user($_POST[$nameVariableUser], ' a été sélectionné plusieurs fois', $bdd);
             }
             $idUser++;
-            $nameVariableUser = 'planning_' . $_POST['id_planning_edit'] .  '_' . $idUser;
+            $nameVariableUser = 'planning_' . $_POST['id_planning_edit'] .  '&_' . $idUser;
         }
 
         // Supprime des élèves si demandé
         $idUser = 1;
         $nameVariableUser = 'removed_user_' . $_POST['id_planning_edit'] .  '_' . $idUser;
-        $req = $bdd->prepare('DELETE FROM users_in_planning WHERE id_planning = ? AND id_user = ?');
-        while(isset($_POST[$nameVariableUser]) AND !empty($_POST[$nameVariableUser])){
-            $req->execute(array($_POST['id_planning_edit'], $_POST[$nameVariableUser]));
-            $idUser++;
-            $nameVariableUser = 'removed_user_' . $_POST['id_planning_edit'] .  '_' . $idUser;
+        if(isset($_POST[$nameVariableUser]) AND !empty($_POST[$nameVariableUser])){
+            $nbUsersInPlanning = $bdd->prepare('SELECT COUNT(*) FROM users_in_planning WHERE id_planning = ?');
+            $nbUsersInPlanning->execute(array($_POST['id_planning_edit']));
+
+            if($nbUsersInPlanning->fetch()[0] > 1){
+                $req = $bdd->prepare('DELETE FROM users_in_planning WHERE id_planning = ? AND id_user = ?');
+                do{
+                    $req->execute(array($_POST['id_planning_edit'], $_POST[$nameVariableUser]));
+                    $idUser++;
+                    $nameVariableUser = 'removed_user_' . $_POST['id_planning_edit'] .  '_' . $idUser;
+                }while(isset($_POST[$nameVariableUser]) AND !empty($_POST[$nameVariableUser]));
+            }else{
+                echo '<p>Impossible de supprimer tous les élèves présents en cours.</p>';
+            }
         }
         
         // Met à jour le planning dans la BDD
