@@ -44,7 +44,6 @@ if (isset($_POST['motDePasse'], $_POST['login'])){
 	$reponse->execute(array($_SESSION['prénom'], $_SESSION['id']));
 	$infoUser = $reponse->fetch();
 	require 'php/user/interface.php';
-	echo '<a href="php/user/logout.php">Déconnexion</a>';
 }else{
 	require 'html/connexion.html';
 }
