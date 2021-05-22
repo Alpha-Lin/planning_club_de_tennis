@@ -18,4 +18,4 @@ Site développé pendant mon temps libre à destination du club de tennis de RS 
 ### Planning utilisateurs vu :
 ![Planning utilisateurs vu](https://github.com/Alpha-Lin/planning_club_de_tennis/blob/master/Interface%20images/Planning%20utilisateur%20Vu.png?raw=true)
 
-## URL : https://alpha-lin.duckdns.org
+## URL : https://alpha-lin.duckdns.org (hors ligne)
